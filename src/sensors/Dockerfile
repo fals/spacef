@@ -11,7 +11,7 @@ WORKDIR /build
 
 # Copy and download dependency using go mod
 COPY go.mod .
-RUN go mod downloaddock
+RUN go mod download
 
 # Copy the code into the container
 COPY . .
