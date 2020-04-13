@@ -16,6 +16,9 @@ RUN go mod download
 # Copy the code into the container
 COPY . .
 
+# Run test
+RUN go test ./...
+
 # Build the application
 RUN go build -o main .
 
@@ -25,10 +28,12 @@ WORKDIR /dist
 # Copy binary from build to main folder
 RUN cp /build/main .
 
-# Build a small image
+############################
+# STEP 2 build a small image
+############################
 FROM scratch
 
 COPY --from=builder /dist/main /
 
-# Command to run
+# Command to run the executable
 ENTRYPOINT ["/main"]
