@@ -4,6 +4,7 @@ import (
   "fmt"
   "os"
   "spacef/telemetry/telemetry_server"
+
 )
 
 func main() {
@@ -12,7 +13,11 @@ func main() {
   server, err := telemetry_server.Connect(15002)
   checkError(err)
 
+  fmt.Println("Server started...")
+
   handler := telemetry_server.CreateHandler();
+  
+  fmt.Println("Handling connections...")
 
   server.HandleConnections(handler);
 }

@@ -5,6 +5,7 @@ import
 	"net"
 	"strconv"
 	"os"
+	"fmt"
 )
 
 type TelemetryServer struct {
@@ -15,7 +16,7 @@ type TelemetryServer struct {
 func Connect(port int) (*TelemetryServer, error) {
 	address := ":" + strconv.Itoa(port)
 	
-	tcpAddr, err := net.ResolveTCPAddr("tcp4", 	address)
+	tcpAddr, err := net.ResolveTCPAddr("tcp", 	address)
 	
 	if err != nil {
 		return nil, err
@@ -32,12 +33,15 @@ func Connect(port int) (*TelemetryServer, error) {
 
 func (server *TelemetryServer) HandleConnections(handler ITelemetryConnHandler) {
 	for {
+		fmt.Println("Waiting connections...")
         conn, err := server.listener.Accept()
         if err != nil {
+			fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
             continue
 		}
-		
-        go handler.HandleClient(conn)
+
+		go handler.HandleClient(conn)
+		fmt.Println("One connection handled closed")
 	}
 }
 
