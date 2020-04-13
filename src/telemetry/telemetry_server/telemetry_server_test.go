@@ -4,9 +4,10 @@ import (
     "testing"
 )
 
-func Should_Be_Able_To_Connect(t *testing.T)  {
-    err := Connect(15002)
-
+func Test_Should_Be_Able_To_Connect(t *testing.T)  {
+    server, err := Connect(1)
+    server.Close();
+    
     if err != nil {
         t.Errorf("Can't connect %s", err.Error())
     }

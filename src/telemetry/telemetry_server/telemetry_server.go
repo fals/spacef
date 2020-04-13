@@ -4,48 +4,44 @@ import
 (
 	"net"
 	"strconv"
+	"os"
 )
 
-func Connect(port int) error {
-	service := ":" + strconv.Itoa(port)
+type TelemetryServer struct {
+	address string
+    listener *net.TCPListener
+}
+
+func Connect(port int) (*TelemetryServer, error) {
+	address := ":" + strconv.Itoa(port)
 	
-	tcpAddr, err := net.ResolveTCPAddr("tcp4", service)
+	tcpAddr, err := net.ResolveTCPAddr("tcp4", 	address)
 	
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	listener, err := net.ListenTCP("tcp", tcpAddr)
 	
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-    for {
-        conn, err := listener.Accept()
+	return &TelemetryServer {address, listener}, nil
+}
+
+func (server *TelemetryServer) HandleConnections(handler ITelemetryConnHandler) {
+	for {
+        conn, err := server.listener.Accept()
         if err != nil {
             continue
 		}
 		
-        go handleClient(conn)
+        go handler.HandleClient(conn)
 	}
-	
-	return nil
 }
 
-func handleClient(conn net.Conn) {
-    defer conn.Close()
-
-    var buf [512]byte
-    for {
-        n, err := conn.Read(buf[0:])
-        if err != nil {
-            return
-        }
-
-        _, err2 := conn.Write(buf[0:n])
-        if err2 != nil {
-            return
-        }
-    }
+func (server *TelemetryServer) Close()  {
+	server.listener.Close()
+	os.Exit(0);
 }

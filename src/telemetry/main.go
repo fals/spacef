@@ -9,8 +9,12 @@ import (
 func main() {
   fmt.Println("Start server...")
 
-  err := telemetry_server.Connect(15002)
+  server, err := telemetry_server.Connect(15002)
   checkError(err)
+
+  handler := telemetry_server.CreateHandler();
+
+  server.HandleConnections(handler);
 }
 
 func checkError(err error) {
