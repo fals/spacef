@@ -2,6 +2,7 @@
 #include <string.h> //strlen
 #include <sys/socket.h>
 #include <arpa/inet.h> //inet_addr
+#include <unistd.h>
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +20,7 @@ int main(int argc, char *argv[])
 	{
 		printf("Socket Created\n");
 	}
-	
+
 	memset(&server, 0, sizeof(server));
 
 	server.sin_family = AF_INET;
@@ -41,13 +42,17 @@ int main(int argc, char *argv[])
 	puts("Connected\n");
 
 	//Send some data
-	char const *message = "GET / HTTP/1.1\r\n\r\n";
-	if (send(socket_desc, message, strlen(message), 0) < 0)
+	char const *message = "id=sensor_number&tp=temperature&un=C&vl=23.4&ts=1586896417";
+	while (1 == 1)
 	{
-		puts("Send failed");
-		return 1;
+		if (send(socket_desc, message, strlen(message), 0) < 0)
+		{
+			puts("Send failed");
+			return 1;
+		}
+		puts("Data Send\n");
+		sleep(1);
 	}
-	puts("Data Send\n");
 
 	return 0;
 }
