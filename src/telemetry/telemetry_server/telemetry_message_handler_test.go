@@ -5,13 +5,13 @@ import (
     "os"
 )
 
+var  messageInBytes = []byte("id=sensor_number&tp=temperature&un=C&vl=23.4&ts=1586896417")
+
 func TestMain(m *testing.M) {
     os.Exit(m.Run())
 }
 
 func Test_Message_Handle_Should_Return_Message_With_Id(t *testing.T)  {
-    messageInBytes := []byte("id=sensor_number&tp=temperature&un=C&vl=23.4&ts=1586896417")
-    
     message := HandleMessage(messageInBytes)
 
     if message.id != "sensor_number" {
@@ -21,8 +21,6 @@ func Test_Message_Handle_Should_Return_Message_With_Id(t *testing.T)  {
 }
 
 func Test_Message_Handle_Should_Return_Message_With_Type(t *testing.T)  {
-    messageInBytes := []byte("id=sensor_number&tp=temperature&un=C&vl=23.4&ts=1586896417")
-    
     message := HandleMessage(messageInBytes)
 
     if message.sensor_type != "temperature" {
@@ -32,8 +30,6 @@ func Test_Message_Handle_Should_Return_Message_With_Type(t *testing.T)  {
 }
 
 func Test_Message_Handle_Should_Return_Message_With_Unit(t *testing.T)  {
-    messageInBytes := []byte("id=sensor_number&tp=temperature&un=C&vl=23.4&ts=1586896417")
-    
     message := HandleMessage(messageInBytes)
 
     if message.unit != "C" {
@@ -43,8 +39,6 @@ func Test_Message_Handle_Should_Return_Message_With_Unit(t *testing.T)  {
 }
 
 func Test_Message_Handle_Should_Return_Message_With_Value(t *testing.T)  {
-    messageInBytes := []byte("id=sensor_number&tp=temperature&un=C&vl=23.4&ts=1586896417")
-    
     message := HandleMessage(messageInBytes)
 
     if message.value != 23.4 {
@@ -54,8 +48,6 @@ func Test_Message_Handle_Should_Return_Message_With_Value(t *testing.T)  {
 }
 
 func Test_Message_Handle_Should_Return_Message_With_Timestamp(t *testing.T)  {
-    messageInBytes := []byte("id=sensor_number&tp=temperature&un=C&vl=23.4&ts=1586896417")
-    
     message := HandleMessage(messageInBytes)
 
     if message.timestamp != 1586896417 {
