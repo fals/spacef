@@ -23,5 +23,5 @@ public:
     Sensor(string id, string type, string unit);
     ~Sensor();
     int start(string address, int port);
-    int sendData();
+    int sendData(int interval);
 };

@@ -57,7 +57,7 @@ int Sensor::start(string address, int port)
 	return 0;
 }
 
-int Sensor::sendData()
+int Sensor::sendData(int interval)
 {
 	using namespace std::chrono;
 
@@ -86,6 +86,6 @@ int Sensor::sendData()
 			return 1;
 		}
 		printf("Data Send\n");
-		sleep(1);
+		sleep(interval);
 	}
 }
