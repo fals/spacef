@@ -5,6 +5,6 @@ type TelemetryMessage struct {
 	sensor_type string
 	unit string
 	value float64
-	timestamp int64
+	timestamp uint64
 }
 

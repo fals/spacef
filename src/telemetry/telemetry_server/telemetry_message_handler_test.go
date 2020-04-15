@@ -5,8 +5,8 @@ import (
     "os"
 )
 
-var  messageInBytes = []byte("id=sensor_number&tp=temperature&un=C&vl=23.4&ts=1586896417")
 
+var  messageInBytes = []byte("id=sensor_number&tp=temperature&un=C&vl=23.4&ts=1586983044290")
 func TestMain(m *testing.M) {
     os.Exit(m.Run())
 }
@@ -50,7 +50,7 @@ func Test_Message_Handle_Should_Return_Message_With_Value(t *testing.T)  {
 func Test_Message_Handle_Should_Return_Message_With_Timestamp(t *testing.T)  {
     message := HandleMessage(messageInBytes)
 
-    if message.timestamp != 1586896417 {
+    if message.timestamp != 1586983044290 {
         t.Errorf("Wrong Parsed Value for timestamp %d", message.timestamp)
         os.Exit(-1)
     }
