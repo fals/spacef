@@ -35,6 +35,8 @@ func (h *TelemetryConnHandler) HandleClient(conn net.Conn) {
         
         message := HandleMessage(result.Bytes());
 
+        result.Reset()
+
         fmt.Println(message)
     }
 }

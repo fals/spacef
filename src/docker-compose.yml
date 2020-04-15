@@ -1,16 +1,16 @@
 version: '2.0'
 services:
-  telemetry:
+  spacef.telemetry:
     build: ./telemetry
     ports:
     - "15002:15002"
     networks:
           spacef:
               ipv4_address: 172.16.238.10
-  sensors:
+  spacef.sensors:
     build: ./sensors
     links:
-    - telemetry
+    - spacef.telemetry
     networks:
           spacef:
               ipv4_address: 172.16.238.11
