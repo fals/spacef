@@ -1,10 +1,9 @@
-package main
+package spacef
 
 import (
   "fmt"
   "os"
   "spacef/telemetry/telemetry_server"
-
 )
 
 func main() {

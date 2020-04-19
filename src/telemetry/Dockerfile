@@ -1,39 +1,29 @@
-FROM golang:alpine AS builder
+FROM golang:alpine as build
 
-# Set necessary environmet variables needed for our image
-ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
-    GOOS=linux \
+# The default location is /go/src
+WORKDIR /go/src/app
+ENV GOOS=linux \
     GOARCH=amd64
-
-# Move to working directory /build
-WORKDIR /build
-
-# Copy and download dependency using go mod
-COPY go.mod .
-RUN go mod download
-
-# Copy the code into the container
+# We simply copy everything to /go/src/app    
 COPY . .
+# Add the required build libraries
+RUN apk update && apk add gcc librdkafka-dev zstd-libs libsasl lz4-dev libc-dev musl-dev 
+# Run the build
+RUN go build -o main
 
-# Run test
-RUN go test ./... -v
-
-# Build the application
-RUN go build -o main .
-
-# Move to /dist directory as the place for resulting binary folder
-WORKDIR /dist
-
-# Copy binary from build to main folder
-RUN cp /build/main .
-
-############################
-# STEP 2 build a small image
-############################
-FROM scratch
-
-COPY --from=builder /dist/main /
-
-# Command to run the executable
-ENTRYPOINT ["/main"]
+FROM alpine
+# We use dockerize to make sure the kafka sever is up and running before the command starts.
+ENV DOCKERIZE_VERSION v0.6.1
+ENV KAFKA kafka
+# Add dockerize
+RUN apk --no-cache upgrade && apk --no-cache --virtual .get add curl \
+ && curl -L -O https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz \
+ && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+ && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+ && apk del .get \
+ # Add the runtime dependency.
+ && apk add --no-cache librdkafka
+# Fetch the binary 
+COPY --from=build /go/src/app/main /
+# Wait for kafka to come up, only then start /main
+ENTRYPOINT ["sh","-c","/usr/local/bin/dockerize -wait tcp://${KAFKA}:9092 /main kafka test"]
