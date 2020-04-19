@@ -7,8 +7,16 @@ COPY . /usr/src/sensors
 # Specify the working directory
 WORKDIR /usr/src/sensors
 
-# Use GCC to compile the Test.cpp source file
+# Use GCC to compile the source file
 RUN g++ *.cpp -I . -o Sensor -std=c++11 -lpthread
 
+# We use dockerize to make sure the kafka sever is up and running before the command starts.
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+    
+ENV SERVER spacef.telemetry
+
 # Run the program output from the previous step
-CMD ["./Sensor"]
+ENTRYPOINT ["sh","-c","/usr/local/bin/dockerize -wait tcp://${SERVER}:15002 ./Sensor spacef.telemetry test"]
