@@ -1,15 +1,22 @@
 FROM golang:alpine as build
 
-# The default location is /go/src
-WORKDIR /go/src/app
 ENV GOOS=linux \
     GOARCH=amd64
-# We simply copy everything to /go/src/app    
+
+# The default location is /go/src
+WORKDIR /go/src/spacef
+
+# We simply copy everything to /go/src/spacef    
 COPY . .
+
 # Add the required build libraries
 RUN apk update && apk add gcc librdkafka-dev zstd-libs libsasl lz4-dev libc-dev musl-dev 
+
 # Run the build
 RUN go build -o main
+
+# Run test
+RUN go test -v ./...
 
 FROM alpine
 # We use dockerize to make sure the kafka sever is up and running before the command starts.
@@ -24,6 +31,6 @@ RUN apk --no-cache upgrade && apk --no-cache --virtual .get add curl \
  # Add the runtime dependency.
  && apk add --no-cache librdkafka
 # Fetch the binary 
-COPY --from=build /go/src/app/main /
+COPY --from=build /go/src/spacef/main /
 # Wait for kafka to come up, only then start /main
 ENTRYPOINT ["sh","-c","/usr/local/bin/dockerize -wait tcp://${KAFKA}:9092 /main kafka test"]

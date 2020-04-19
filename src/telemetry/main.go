@@ -1,4 +1,4 @@
-package spacef
+package main
 
 import (
   "fmt"
