@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"spacef/telemetry/telemetry_server"
+	"telemetry/telemetry_server"
 )
 
 func main() {
