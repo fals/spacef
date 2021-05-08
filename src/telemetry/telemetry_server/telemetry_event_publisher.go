@@ -2,11 +2,12 @@ package telemetry_server
 
 import (
 	"fmt"
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"os"
+
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func Publish(message TelemetryMessage)  {
+func Publish(message TelemetryMessage) {
 	broker := "kafka"
 	topic := "sensors"
 
